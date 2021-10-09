@@ -28,6 +28,8 @@ namespace RestaurantAPI2
                             Street = dto.Street 
                         }
                     ));
+
+            CreateMap<CreateDishDto, Dish>();
         }
     }
 }
