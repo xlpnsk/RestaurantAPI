@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -9,6 +11,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RestaurantAPI2.Entities;
 using RestaurantAPI2.Middleware;
+using RestaurantAPI2.Models;
+using RestaurantAPI2.Models.Validators;
 using RestaurantAPI2.Services;
 using System;
 using System.Collections.Generic;
@@ -30,7 +34,7 @@ namespace RestaurantAPI2
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IWeatherForecastService, WeatherForecastService>();
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation();
             services.AddDbContext<RestaurantDbContext>();
             services.AddScoped<RestaurantSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
@@ -39,6 +43,7 @@ namespace RestaurantAPI2
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             services.AddScoped<RequestTimeMiddleware>();
             services.AddSwaggerGen();
         }
