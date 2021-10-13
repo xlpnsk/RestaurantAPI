@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI2.Entities;
@@ -7,12 +8,14 @@ using RestaurantAPI2.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace RestaurantAPI2.Controllers
 {
     [Route("api/restaurant")]
     [ApiController]
+    [Authorize]
     public class RestaurantController : ControllerBase
     {
         private readonly IRestaurantService _restaurantService;
@@ -23,6 +26,7 @@ namespace RestaurantAPI2.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "HasNationality")]
         public ActionResult<IEnumerable<RestaurantDto>> GetAll()
         {
             var restaurantsDtos = _restaurantService.GetAll();
@@ -30,6 +34,7 @@ namespace RestaurantAPI2.Controllers
             return Ok(restaurantsDtos);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public ActionResult<RestaurantDto> Get([FromRoute]int id)
         {
@@ -38,6 +43,10 @@ namespace RestaurantAPI2.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles ="Admin,Manager")]
+        //or
+        //[Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Manager")]
         public ActionResult CreateRestaurant([FromBody]CreateRestaurantDto dto)
         {
             var id = _restaurantService.Create(dto);
