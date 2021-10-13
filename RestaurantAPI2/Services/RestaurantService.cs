@@ -64,6 +64,16 @@ namespace RestaurantAPI2.Services
                 .Include(restaurants => restaurants.Dishes)
                 .ToList();
 
+            //custom authorization
+            /*
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, restaurants,
+                new CreatedMultipleRestaurantsRequirement(2)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+            */
             var restaurantsDtos = _mapper.Map<List<RestaurantDto>>(restaurants);
 
             return restaurantsDtos;
